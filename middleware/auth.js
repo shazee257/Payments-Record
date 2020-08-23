@@ -6,4 +6,11 @@ module.exports = {
     req.flash("error_msg", "Please log in with your credentials!");
     res.redirect("/users/login");
   },
+  ensureGuest: (req, res, next) => {
+    if (req.isAuthenticated()) {
+      res.redirect("/dashboard");
+    } else {
+      return next();
+    }
+  },
 };

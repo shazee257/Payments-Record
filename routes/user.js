@@ -2,13 +2,18 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { ensureAuth, ensureGuest } = require("../middleware/auth");
 
 // User Model
 const User = require("../models/User");
 
-router.get("/login", (req, res) => res.render("login"));
+router.get("/login", ensureGuest, (req, res) =>
+  res.render("login", { login: false })
+);
 
-router.get("/register", (req, res) => res.render("register"));
+router.get("/register", ensureGuest, (req, res) =>
+  res.render("register", { login: false })
+);
 
 router.post("/register", async (req, res) => {
   const { name, email, password, password2 } = req.body;

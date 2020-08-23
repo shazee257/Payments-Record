@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const exphbs = require("express-handlebars");
 const dotenv = require("dotenv");
@@ -19,7 +20,7 @@ const app = express();
 
 // Bodyparser
 app.use(express.urlencoded({ extended: false }));
-//app.use(express.json());
+app.use(express.json());
 
 // Session
 app.use(
@@ -45,13 +46,43 @@ app.use((req, res, next) => {
   next();
 });
 
+// Handlebars Helpers
+const {
+  formatDate,
+  invoicePaidAmount,
+  invoiceDueAmount,
+  invoicesAmount,
+  invoicesPaidAmount,
+  invoicesDueAmount,
+  selectedVendor,
+} = require("./helpers/hbs");
+
 // View Engine Setup
-app.engine("hbs", exphbs({ extname: ".hbs" }));
+app.engine(
+  "hbs",
+  exphbs({
+    helpers: {
+      formatDate,
+      invoicePaidAmount,
+      invoiceDueAmount,
+      invoicesAmount,
+      invoicesPaidAmount,
+      invoicesDueAmount,
+      selectedVendor,
+    },
+    extname: ".hbs",
+  })
+);
 app.set("view engine", "hbs");
+
+// Static folder
+app.use(express.static(path.join(__dirname, "public")));
 
 //Routes
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/user"));
+app.use("/vendors", require("./routes/vendor"));
+app.use("/invoices", require("./routes/invoice"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(
