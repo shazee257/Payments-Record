@@ -2,65 +2,65 @@ const express = require("express");
 const router = express.Router();
 
 // Load Models
-const Vendor = require("../models/vendor");
+const Customer = require("../models/customer");
 const Invoice = require("../models/invoice");
 const Transaction = require("../models/transaction");
 
-// Get All Vendors
+// Get All customers
 router.get("/", async (req, res) => {
-  const vendors = await Vendor.find({}).lean();
-  res.render("vendors/list", {
-    vendors,
+  const customers = await Customer.find().lean();
+  res.render("customers/list", {
+    customers,
     login: true,
-    title: "All Vendors' List",
+    title: "All Customers' List",
   });
 });
 
-// GET - New Vendor
+// GET - New customer
 router.get("/new", (req, res) => {
-  res.render("vendors/new", { login: true, title: "New Vendor" });
+  res.render("customers/new", { login: true, title: "New Customer" });
 });
 
-// POST - New Vendor
+// POST - New customer
 router.post("/new", async (req, res) => {
-  const vendor = await Vendor.create(req.body);
-  res.redirect("/vendors");
+  const customer = await Customer.create(req.body);
+  res.redirect("/customers");
 });
 
-// GET - Edit Vendor
+// GET - Edit customer
 router.get("/edit/:id", async (req, res) => {
-  const vendor = await Vendor.findById(req.params.id).lean();
-  res.render("vendors/edit", {
-    vendor,
+  const customer = await Customer.findById(req.params.id).lean();
+  res.render("customers/edit", {
+    customer,
     login: true,
-    title: "Edit Vendor Information",
+    title: "Edit Customer Information",
   });
 });
 
-// POST - Edit Vendor
+// POST - Edit customer
 router.post("/edit/:id", async (req, res) => {
-  await Vendor.findByIdAndUpdate(req.params.id, req.body);
-  res.redirect("/vendors");
+  await Customer.findByIdAndUpdate(req.params.id, req.body);
+  res.redirect("/customers");
 });
 
-// GET - Delete Vendor
+// GET - Delete customer
 router.get("/delete/:id", async (req, res) => {
   let match = false;
   const invoices = await Invoice.find().lean();
   invoices.map((inv) => {
-    if (inv.vendor == req.params.id) {
+    if (inv.customer == req.params.id) {
       match = true;
     }
   });
   if (match) {
     req.flash(
       "error_msg",
-      "This vendor contains payment invoice(s), please remove invoice(s) to perform this operation!"
+      "This customer contains payment invoice(s), please remove invoice(s) to perform this operation!"
     );
   } else {
-    await Vendor.findByIdAndDelete(req.params.id);
+    await Customer.findByIdAndDelete(req.params.id);
   }
-  res.redirect("/vendors");
+  res.redirect("/customers");
 });
 
 //
@@ -74,14 +74,13 @@ router.get("/delete/:id", async (req, res) => {
 
 // Get All Invoices with Transactions & Vendors
 router.get("/invoices", async (req, res) => {
-  const invoices = await Invoice.find({ customer: null })
-    .select("number amount date vendor")
-    .populate("transactions vendor")
+  const invoices = await Invoice.find({ vendor: null })
+    .populate("transactions customer")
     .lean();
-  res.render("vendors/invoices/list", {
+  res.render("customers/invoices/list", {
     invoices,
     login: true,
-    title: "All Vendors' Invoices",
+    title: "All Customers' Invoices",
   });
 });
 
@@ -90,9 +89,9 @@ router.get("/invoices/detail/:number", async (req, res) => {
   const invoice = await Invoice.findOne({
     number: req.params.number,
   })
-    .populate("transactions vendor")
+    .populate("transactions customer")
     .lean();
-  res.render("vendors/invoices/detail", { invoice, login: true });
+  res.render("customers/invoices/detail", { invoice, login: true });
 });
 
 // Make Payment against invoice
@@ -101,14 +100,14 @@ router.post("/invoices/payments/:number", async (req, res) => {
   const transaction = await Transaction.create(req.body);
   invoice.transactions.push(transaction);
   await invoice.save();
-  res.redirect(`/vendors/invoices/detail/${invoice.number}`);
+  res.redirect(`/customers/invoices/detail/${invoice.number}`);
 });
 
 // Create a new Invoice
 router.get("/invoices/new", async (req, res) => {
-  const vendors = await Vendor.find({}).lean();
-  res.render("vendors/invoices/new", {
-    vendors,
+  const customers = await Customer.find({}).lean();
+  res.render("customers/invoices/new", {
+    customers,
     login: true,
     title: "Create a new Invoice",
   });
@@ -117,18 +116,18 @@ router.get("/invoices/new", async (req, res) => {
 // Create New Invoice
 router.post("/invoices/new", async (req, res) => {
   const invoice = await Invoice.create(req.body);
-  res.redirect("/vendors/invoices");
+  res.redirect("/customers/invoices");
 });
 
 // Edit Invoice
 router.get("/invoices/edit/:id", async (req, res) => {
-  const vendors = await Vendor.find({}).lean();
+  const customers = await Customer.find({}).lean();
   const invoice = await Invoice.findById(req.params.id)
-    .populate("vendor")
+    .populate("customer")
     .lean();
-  res.render("vendors/invoices/edit", {
+  res.render("customers/invoices/edit", {
     invoice,
-    vendors,
+    customers,
     login: true,
     title: "Update Invoice",
   });
@@ -136,12 +135,12 @@ router.get("/invoices/edit/:id", async (req, res) => {
 
 // Update Invoice
 router.post("/invoices/edit/:id", async (req, res) => {
-  await Invoice.findByIdAndUpdate(req.params.id, {
-    amount: Number(req.body.amount),
-    vendor: req.body.vendor,
-    date: Date.parse(req.body.date),
-  });
-  res.redirect("/vendors/invoices");
+  await Invoice.findByIdAndUpdate(req.params.id, req.body);
+  // {   amount: Number(req.body.amount),
+  //   vendor: req.body.vendor,
+  //   date: Date.parse(req.body.date),
+  // });
+  res.redirect("/customers/invoices");
 });
 
 // Delete Invoice
@@ -159,7 +158,7 @@ router.get("/invoices/delete/:id", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  res.redirect("/vendors/invoices");
+  res.redirect("/customers/invoices");
 });
 
 module.exports = router;

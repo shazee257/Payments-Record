@@ -12,19 +12,19 @@
         </tr>
     </thead>
     <tbody>
-        {{#each vendors}}
+        {{#each customers}}
         <tr>
             <td>{{name}}</td>
             <td>{{description}}</td>
             <td>{{address}}</td>
             <td>{{phone}}</td>
             <td>
-                <a href="/vendors/edit/{{_id}}" class="btn btn-float">
+                <a href="/customers/edit/{{_id}}" class="btn btn-float">
                     <i class="fas fa-edit" style="color:navy;"></i>
                 </a>
             </td>
             <td>
-                <form action="/vendors/delete/{{_id}}/" method="GET">
+                <form action="/customers/delete/{{_id}}/" method="GET">
                     <button type="submit" class="btn">
                         <i class="fas fa-trash" style="color: red"></i>
                     </button>
@@ -37,6 +37,6 @@
 <br><br>
 {{> _messages}}
 <div class="fixed-action-btn">
-    <a href="/vendors/new" class="btn btn-primary">
-        <i class="fas fa-plus"></i> New Vendor</a>
+    <a href="/customers/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Customer</a>
 </div>

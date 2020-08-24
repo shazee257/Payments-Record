@@ -1,10 +1,10 @@
 <div class="row mt-5">
     <div class="col-md-6 m-auto">
         <div class="card card-body">
-            <h1 class="text-center mb-3"><i class="far fa-edit"></i> Update Invoice</h1>
+            <h1 class="text-center mb-3"><i class="far fa-edit"></i> {{title}}</h1>
             <br>
             {{> _messages}}
-            <form action="/invoices/edit/{{invoice._id}}" method="POST">
+            <form action="/vendors/invoices/edit/{{invoice._id}}" method="POST">
                 <div class="form-group">
                     <label for="number">Invoice #</label>
                     <input type="text" id="number" name="number" class="form-control" value="{{invoice.number}}" />

@@ -77,7 +77,7 @@
                 <h2 class="text-center mb-3"><i class="fab fa-amazon-pay"></i> New Payment Transaction</h2>
                 <br>
                 {{> _messages}}
-                <form action="/invoices/payments/{{invoice.number}}" method="POST">
+                <form action="/vendors/invoices/payments/{{invoice.number}}" method="POST">
                     <div class="form-group">
                         <label for="invoice">Invoice #</label>
                         <input type="text" id="number" name="number" class="form-control" value="{{invoice.number}}"

@@ -82,7 +82,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/user"));
 app.use("/vendors", require("./routes/vendor"));
-app.use("/invoices", require("./routes/invoice"));
+app.use("/customers", require("./routes/customer"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(

@@ -4,26 +4,33 @@
         aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="/">Financial Ledger</a>
+    <a class="navbar-brand" href="/" style="display: flex;">
+        <i class="fab fa-amazon-pay" style="color:violet;"> <span style="font-family:Helvetica;">
+                Financial Ledger</span></i>
+    </a>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item dropdown dmenu">
-                <a class="nav-link dropdown-toggle" href="/invoices" id="navbardrop" data-toggle="dropdown">
-                    Invoice
-                </a>
-                <div class="dropdown-menu sm-menu">
-                    <a class="dropdown-item" href="/invoices">Invoices List</a>
-                    <a class="dropdown-item" href="/invoices/new">New Invoice</a>
-                </div>
-            </li>
             <li class="nav-item dropdown dmenu">
                 <a class="nav-link dropdown-toggle" href="/vendors" id="navbardrop" data-toggle="dropdown">
                     Vendor
                 </a>
                 <div class="dropdown-menu sm-menu">
-                    <a class="dropdown-item" href="/vendors">Vendors List</a>
+                    <a class="dropdown-item" href="/vendors">List of Vendors</a>
                     <a class="dropdown-item" href="/vendors/new">New Vendor</a>
+                    <a class="dropdown-item" href="/vendors/invoices">List of Invoices</a>
+                    <a class="dropdown-item" href="/vendors/invoices/new">New Invoice</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown dmenu">
+                <a class="nav-link dropdown-toggle" href="/customers" id="navbardrop" data-toggle="dropdown">
+                    Customer
+                </a>
+                <div class="dropdown-menu sm-menu">
+                    <a class="dropdown-item" href="/customers">List of Customers</a>
+                    <a class="dropdown-item" href="/customers/new">New Customer</a>
+                    <a class="dropdown-item" href="/customers/invoices">List of Invoices</a>
+                    <a class="dropdown-item" href="/customers/invoices/new">New Invoice</a>
                 </div>
             </li>
             <li class="nav-item">
