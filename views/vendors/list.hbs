@@ -14,7 +14,11 @@
     <tbody>
         {{#each vendors}}
         <tr>
-            <td>{{name}}</td>
+            <td>
+                <a href="/vendors/invoices/vendor/{{_id}}">
+                    {{name}}
+                </a>
+            </td>
             <td>{{description}}</td>
             <td>{{address}}</td>
             <td>{{phone}}</td>

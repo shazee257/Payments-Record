@@ -162,4 +162,57 @@ router.get("/invoices/delete/:id", async (req, res) => {
   res.redirect("/vendors/invoices");
 });
 
+//
+//
+//
+//
+//
+
+// Get Vendor Invoices
+router.get("/invoices/vendor/:id", async (req, res) => {
+  const vendor = await Vendor.findById(req.params.id).lean();
+  const invoices = await Invoice.find({ vendor: req.params.id })
+    .populate("transactions vendor")
+    .lean();
+  res.render("vendors/invoices/vendor-invoices", {
+    invoices,
+    login: true,
+    title: `Invoices - ${vendor.name}`,
+  });
+});
+
+// Get - Edit Payment
+router.get("/invoices/payment/edit/:id", async (req, res) => {
+  const transaction = await Transaction.findById(req.params.id).lean();
+  const invoice = await Invoice.findOne({ transactions: req.params.id }).lean();
+  res.render("vendors/invoices/edit-payment", {
+    number: invoice.number,
+    transaction,
+    login: true,
+  });
+});
+
+// Post - Edit Payment
+router.post("/invoices/payment/edit/:id", async (req, res) => {
+  await Transaction.findByIdAndUpdate(req.params.id, {
+    amount: req.body.amount,
+    date: Date.parse(req.body.date),
+  });
+  const invoice = await Invoice.findOne({ transactions: req.params.id }).lean();
+  res.redirect(`/vendors/invoices/detail/${invoice.number}`);
+});
+
+// Get - Delete  Payment
+router.get("/invoices/payment/delete/:id", async (req, res) => {
+  await Transaction.findByIdAndDelete(req.params.id);
+  const invoice = await Invoice.findOne({ transactions: req.params.id });
+  //console.log(invoice.transactions);
+  const index = invoice.transactions.indexOf(req.params.id);
+  if (index > -1) {
+    invoice.transactions.splice(index, 1);
+  }
+  invoice.save();
+  res.redirect(`/vendors/invoices/detail/${invoice.number}`);
+});
+
 module.exports = router;

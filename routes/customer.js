@@ -136,10 +136,6 @@ router.get("/invoices/edit/:id", async (req, res) => {
 // Update Invoice
 router.post("/invoices/edit/:id", async (req, res) => {
   await Invoice.findByIdAndUpdate(req.params.id, req.body);
-  // {   amount: Number(req.body.amount),
-  //   vendor: req.body.vendor,
-  //   date: Date.parse(req.body.date),
-  // });
   res.redirect("/customers/invoices");
 });
 
@@ -159,6 +155,28 @@ router.get("/invoices/delete/:id", async (req, res) => {
     console.log(error);
   }
   res.redirect("/customers/invoices");
+});
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// Get Customer Invoices
+router.get("/invoices/customer/:id", async (req, res) => {
+  const customer = await Customer.findById(req.params.id).lean();
+  const invoices = await Invoice.find({ customer: req.params.id })
+    .populate("transactions customer")
+    .lean();
+  res.render("customers/invoices/customer-invoices", {
+    invoices,
+    login: true,
+    title: `Invoices - ${customer.name}`,
+  });
 });
 
 module.exports = router;

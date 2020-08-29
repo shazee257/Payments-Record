@@ -15,12 +15,12 @@
             <td>{{formatDate date 'Do MMMM YYYY'}}</td>
             <td>{{amount}}</td>
             <td>
-                <a href="/stories/edit/" class="btn btn-float">
+                <a href="/vendors/invoices/payment/edit/{{_id}}" class="btn btn-float">
                     <i class="fas fa-edit"></i>
                 </a>
             </td>
             <td>
-                <form action="/stories/" method="POST" id="delete-form">
+                <form action="/vendors/invoices/payment/delete/{{_id}}" method="GET" id="delete-form">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn red">
                         <i class="fas fa-trash"></i>
