@@ -11,14 +11,13 @@ router.get("/", async (req, res) => {
   const customers = await Customer.find().lean();
   res.render("customers/list", {
     customers,
-    login: true,
     title: "All Customers' List",
   });
 });
 
 // GET - New customer
 router.get("/new", (req, res) => {
-  res.render("customers/new", { login: true, title: "New Customer" });
+  res.render("customers/new", { title: "New Customer" });
 });
 
 // POST - New customer
@@ -32,7 +31,6 @@ router.get("/edit/:id", async (req, res) => {
   const customer = await Customer.findById(req.params.id).lean();
   res.render("customers/edit", {
     customer,
-    login: true,
     title: "Edit Customer Information",
   });
 });
@@ -79,7 +77,6 @@ router.get("/invoices", async (req, res) => {
     .lean();
   res.render("customers/invoices/list", {
     invoices,
-    login: true,
     title: "All Customers' Invoices",
   });
 });
@@ -108,7 +105,6 @@ router.get("/invoices/new", async (req, res) => {
   const customers = await Customer.find({}).lean();
   res.render("customers/invoices/new", {
     customers,
-    login: true,
     title: "Create a new Invoice",
   });
 });
@@ -128,7 +124,6 @@ router.get("/invoices/edit/:id", async (req, res) => {
   res.render("customers/invoices/edit", {
     invoice,
     customers,
-    login: true,
     title: "Update Invoice",
   });
 });
@@ -174,9 +169,41 @@ router.get("/invoices/customer/:id", async (req, res) => {
     .lean();
   res.render("customers/invoices/customer-invoices", {
     invoices,
-    login: true,
     title: `Invoices - ${customer.name}`,
   });
+});
+
+// Get - Edit Payment
+router.get("/invoices/payment/edit/:id", async (req, res) => {
+  const transaction = await Transaction.findById(req.params.id).lean();
+  const invoice = await Invoice.findOne({ transactions: req.params.id }).lean();
+  res.render("customers/invoices/edit-payment", {
+    number: invoice.number,
+    transaction,
+  });
+});
+
+// Post - Edit Payment
+router.post("/invoices/payment/edit/:id", async (req, res) => {
+  await Transaction.findByIdAndUpdate(req.params.id, {
+    amount: req.body.amount,
+    date: Date.parse(req.body.date),
+  });
+  const invoice = await Invoice.findOne({ transactions: req.params.id }).lean();
+  res.redirect(`/customers/invoices/detail/${invoice.number}`);
+});
+
+// Get - Delete  Payment
+router.get("/invoices/payment/delete/:id", async (req, res) => {
+  await Transaction.findByIdAndDelete(req.params.id);
+  const invoice = await Invoice.findOne({ transactions: req.params.id });
+  //console.log(invoice.transactions);
+  const index = invoice.transactions.indexOf(req.params.id);
+  if (index > -1) {
+    invoice.transactions.splice(index, 1);
+  }
+  invoice.save();
+  res.redirect(`/customers/invoices/detail/${invoice.number}`);
 });
 
 module.exports = router;

@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
+const { ensureAuthenticated } = require("./middleware/auth");
 
 // Passport config
 require("./config/passport")(passport);
@@ -43,6 +44,13 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
+  res.locals.isAdmin = () => {
+    if (req.user.accessLevel === "Admin") {
+      return true;
+    } else {
+      return false;
+    }
+  };
   next();
 });
 
@@ -55,6 +63,7 @@ const {
   invoicesPaidAmount,
   invoicesDueAmount,
   selectedVendor,
+  select,
 } = require("./helpers/hbs");
 
 // View Engine Setup
@@ -69,6 +78,7 @@ app.engine(
       invoicesPaidAmount,
       invoicesDueAmount,
       selectedVendor,
+      select,
     },
     extname: ".hbs",
   })
@@ -80,9 +90,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //Routes
 app.use("/", require("./routes/index"));
-app.use("/users", require("./routes/user"));
-app.use("/vendors", require("./routes/vendor"));
-app.use("/customers", require("./routes/customer"));
+app.use("/users", ensureAuthenticated, require("./routes/user"));
+app.use("/vendors", ensureAuthenticated, require("./routes/vendor"));
+app.use("/customers", ensureAuthenticated, require("./routes/customer"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(

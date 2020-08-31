@@ -11,14 +11,13 @@ router.get("/", async (req, res) => {
   const vendors = await Vendor.find({}).lean();
   res.render("vendors/list", {
     vendors,
-    login: true,
     title: "All Vendors' List",
   });
 });
 
 // GET - New Vendor
 router.get("/new", (req, res) => {
-  res.render("vendors/new", { login: true, title: "New Vendor" });
+  res.render("vendors/new", { title: "New Vendor" });
 });
 
 // POST - New Vendor
@@ -32,7 +31,6 @@ router.get("/edit/:id", async (req, res) => {
   const vendor = await Vendor.findById(req.params.id).lean();
   res.render("vendors/edit", {
     vendor,
-    login: true,
     title: "Edit Vendor Information",
   });
 });
@@ -80,7 +78,6 @@ router.get("/invoices", async (req, res) => {
     .lean();
   res.render("vendors/invoices/list", {
     invoices,
-    login: true,
     title: "All Vendors' Invoices",
   });
 });
@@ -109,7 +106,6 @@ router.get("/invoices/new", async (req, res) => {
   const vendors = await Vendor.find({}).lean();
   res.render("vendors/invoices/new", {
     vendors,
-    login: true,
     title: "Create a new Invoice",
   });
 });
@@ -129,7 +125,6 @@ router.get("/invoices/edit/:id", async (req, res) => {
   res.render("vendors/invoices/edit", {
     invoice,
     vendors,
-    login: true,
     title: "Update Invoice",
   });
 });
@@ -176,7 +171,6 @@ router.get("/invoices/vendor/:id", async (req, res) => {
     .lean();
   res.render("vendors/invoices/vendor-invoices", {
     invoices,
-    login: true,
     title: `Invoices - ${vendor.name}`,
   });
 });
@@ -188,7 +182,6 @@ router.get("/invoices/payment/edit/:id", async (req, res) => {
   res.render("vendors/invoices/edit-payment", {
     number: invoice.number,
     transaction,
-    login: true,
   });
 });
 

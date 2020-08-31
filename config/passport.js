@@ -4,17 +4,16 @@ const bcrypt = require("bcryptjs");
 
 // User Model
 const User = require("../models/User");
-const { use } = require("passport");
 
 module.exports = (passport) => {
   passport.use(
     new LocalStrategy(
-      { usernameField: "email" },
-      async (email, password, done) => {
+      { usernameField: "phone" },
+      async (phone, password, done) => {
         // Match user
-        let user = await User.findOne({ email: email });
+        let user = await User.findOne({ phone: phone });
         if (!user) {
-          return done(null, false, { message: "Email is not registered!" });
+          return done(null, false, { message: "Phone is not registered!" });
         }
         // Match password
         await bcrypt.compare(password, user.password, (err, isMatch) => {

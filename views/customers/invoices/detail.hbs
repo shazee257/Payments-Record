@@ -1,4 +1,4 @@
-<h1>Invoice # {{invoice.number}} - {{invoice.vendor.name}}</h1>
+<h1>Invoice # {{invoice.number}} - {{invoice.customer.name}}</h1>
 
 <table class="table" id="example">
     <thead class="thead-light">
@@ -15,12 +15,12 @@
             <td>{{formatDate date 'Do MMMM YYYY'}}</td>
             <td>{{amount}}</td>
             <td>
-                <a href="/stories/edit/" class="btn btn-float">
+                <a href="/customers/invoices/payment/edit/{{_id}}" class="btn btn-float">
                     <i class="fas fa-edit"></i>
                 </a>
             </td>
             <td>
-                <form action="/stories/" method="POST" id="delete-form">
+                <form action="/customers/invoices/payment/delete/{{_id}}" method="GET" id="delete-form">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn red">
                         <i class="fas fa-trash"></i>
@@ -77,7 +77,7 @@
                 <h2 class="text-center mb-3"><i class="fab fa-amazon-pay"></i> New Payment Transaction</h2>
                 <br>
                 {{> _messages}}
-                <form action="/vendors/invoices/payments/{{invoice.number}}" method="POST">
+                <form action="/customers/invoices/payments/{{invoice.number}}" method="POST">
                     <div class="form-group">
                         <label for="invoice">Invoice #</label>
                         <input type="text" id="number" name="number" class="form-control" value="{{invoice.number}}"

@@ -1,3 +1,21 @@
+<div class="container"></div>
 <h1 class="mt-4">Dashboard</h1>
+
 <p class="lead mb-3">Welcome {{name}}</p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+    {{#if isAdmin}}
+    <p>Access Level: Admin</p>
+    <li class="nav-item">
+        <a class="nav-link btn btn-info" href="/users/list">Users Management</a>
+    </li>
+    <br>
+    <li class="nav-item">
+        <a class="nav-link btn btn-info" href="/products/list">Products Management</a>
+    </li>
+    {{else}}
+    <p>Access Level: Guest</p>
+    {{/if}}
+</ul>
+{{> _messages}}
+</div>

@@ -1,26 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const passport = require("passport");
-const { ensureAuth, ensureGuest } = require("../middleware/auth");
+const { ensureAdmin } = require("../middleware/isAdmin");
 
 // User Model
 const User = require("../models/User");
 
-router.get("/login", ensureGuest, (req, res) =>
-  res.render("login", { login: false })
-);
+// GET - new User
+router.get("/new", (req, res) => res.render("users/new"));
 
-router.get("/register", ensureGuest, (req, res) =>
-  res.render("register", { login: false })
-);
-
-router.post("/register", async (req, res) => {
-  const { name, email, password, password2 } = req.body;
+// POST - new User
+router.post("/new", async (req, res) => {
+  const { name, phone, email, accessLevel, password, password2 } = req.body;
   let errors = [];
 
   // Check required fields
-  if (!name || !email || !password || !password2) {
+  if (!name || !phone || !password || !password2) {
     errors.push({ msg: "Please fill in all fields" });
   }
 
@@ -34,55 +29,86 @@ router.post("/register", async (req, res) => {
     errors.push({ msg: "Password should be at least 6 characters" });
   }
 
+  // Check phone length
+  if (phone.length !== 11) {
+    errors.push({ msg: "Phone number should be length of 11 digits!" });
+  }
+
   if (errors.length > 0) {
-    res.render("register", {
+    res.render("users/new", {
       errors,
       name,
+      phone,
       email,
-      password,
-      password2,
+      accessLevel,
     });
   } else {
     // Validation passed
-    let newUser = await User.findOne({ email: email });
+    let newUser = await User.findOne({ phone: phone });
     // User exists
     if (newUser) {
-      errors.push({ msg: "Email already exists, please try with new one!" });
-      res.render("register", {
+      errors.push({
+        msg: "Phone number already registered, please try with new one!",
+      });
+      res.render("users/new", {
         errors,
         name,
+        phone,
         email,
-        password,
-        password2,
+        accessLevel,
       });
     } else {
       // Create new User
       const newUser = new User({
         name,
+        phone,
         email,
+        accessLevel,
         password: await bcrypt.hash(password, 10),
       });
       await User.create(newUser);
-      req.flash("success_msg", "You are now registered!");
-      res.redirect("/users/login");
+      req.flash("success_msg", "User created successfully!");
+      res.redirect("/users/list");
     }
   }
 });
 
-// Login Handle
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/users/login",
-    failureFlash: true,
-  })(req, res, next);
+//
+
+//
+
+//
+
+// GET - All Users
+router.get("/list", async (req, res) => {
+  const users = await User.find().lean();
+  res.render("users/list", { users });
 });
 
-// Logout Handle
-router.get("/logout", (req, res) => {
-  req.logout();
-  req.flash("success_msg", "You are now logged out!");
-  res.redirect("/users/login");
+// GET - Edit User
+router.get("/edit/:id", async (req, res) => {
+  const user = await User.findById(req.params.id).lean();
+  res.render("users/edit", { user });
+});
+
+// POST - Edit User
+router.post("/edit/:id", async (req, res) => {
+  const { name, phone, email, accessLevel, password, password2 } = req.body;
+  await User.findByIdAndUpdate(req.params.id, {
+    name,
+    phone,
+    email,
+    accessLevel,
+    password: await bcrypt.hash(password, 10),
+  });
+  req.flash("success_msg", "User updated successfully!");
+  res.redirect("/users/list");
+});
+
+// GET - Delete User
+router.get("/delete/:id", async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.redirect("/users/list");
 });
 
 module.exports = router;

@@ -4,7 +4,7 @@ module.exports = {
       return next();
     }
     req.flash("error_msg", "Please log in with your credentials!");
-    res.redirect("/users/login");
+    res.redirect("/login");
   },
   ensureGuest: (req, res, next) => {
     if (req.isAuthenticated()) {

@@ -1,18 +1,18 @@
-{{#if login}}
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
         aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="/" style="display: flex;">
-        <i class="fab fa-amazon-pay" style="color:violet;"> <span style="font-family:Helvetica;">
+    <a class="navbar-brand" href="/dashboard" style="display: flex;">
+        <i class="fab fa-amazon-pay" style="color:violet;"> <span class="btn btn-info" style="font-family:Helvetica;">
                 Financial Ledger</span></i>
     </a>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item dropdown dmenu">
-                <a class="nav-link dropdown-toggle" href="/vendors" id="navbardrop" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle btn btn-success" href="/vendors" id="navbardrop"
+                    data-toggle="dropdown" style="margin-right: 6px">
                     Vendor
                 </a>
                 <div class="dropdown-menu sm-menu">
@@ -23,7 +23,8 @@
                 </div>
             </li>
             <li class="nav-item dropdown dmenu">
-                <a class="nav-link dropdown-toggle" href="/customers" id="navbardrop" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle btn btn-success" href="/customers" id="navbardrop"
+                    data-toggle="dropdown" style="margin-right: 6px">
                     Customer
                 </a>
                 <div class="dropdown-menu sm-menu">
@@ -33,14 +34,11 @@
                     <a class="dropdown-item" href="/customers/invoices/new">New Invoice</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-default my-2 my-sm-0" type="submit">Search</button>
-        </form>
+
+        <a href="/logout" class="btn btn-primary"><i class="fas fa-sign-out-alt"></i>
+            Logout</a>
+
     </div>
 </nav>
 
@@ -48,4 +46,3 @@
 
 <br>
 <br>
-{{/if}}
