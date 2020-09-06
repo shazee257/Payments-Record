@@ -1,4 +1,4 @@
-<h1>Invoice # <a href="/vendors/invoices/detail/{{invoice.number}}">{{invoice.number}}</a> - {{invoice.vendor.name}}
+<h1>Invoice # <a href="/customers/invoices/detail/{{invoice.number}}">{{invoice.number}}</a> - {{invoice.customer.name}}
 </h1>
 
 {{!-- Items Summary --}}
@@ -22,7 +22,7 @@
             <td>{{quantity}}</td>
             <td>{{amount}}</td>
             <td>
-                <form action="/vendors/invoices/items/delete/{{_id}}/" method="GET">
+                <form action="/customers/invoices/items/delete/{{_id}}/" method="GET">
                     <button type="submit" class="btn">
                         <i class="fas fa-trash" style="color: red"></i>
                     </button>
@@ -83,8 +83,8 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Item</th>
+                            <th>Price</th>
                             <th>Qty in Stock</th>
-                            <th>Unit Price</th>
                             <th>Purchase Qty</th>
                             <th>Click to Add</th>
                         </tr>
@@ -92,11 +92,10 @@
                     <tbody>
                         {{#each items}}
                         <tr>
-                            <form action="/vendors/invoices/items/add/{{_id}}" method="POST">
+                            <form action="/customers/invoices/items/add/{{_id}}" method="POST">
                                 <td>{{name}}</td>
-
+                                <td><input type="number" name="unitPrice" value="{{unitPrice}}" disabled></td>
                                 <td>{{quantity}}</td>
-                                <td><input type="number" name="unitPrice"></td>
                                 <td><input type="number" name="quantity"></td>
                                 <input type="hidden" name="invNumber" value="{{../invoice._id}}">
                                 <td>

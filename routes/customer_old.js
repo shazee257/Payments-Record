@@ -5,30 +5,28 @@ const router = express.Router();
 const Customer = require("../models/customer");
 const Invoice = require("../models/invoice");
 const Transaction = require("../models/transaction");
-const InvoiceItems = require("../models/InvoiceItems");
-const Item = require("../models/item");
 
-// Get All Customers
+// Get All customers
 router.get("/", async (req, res) => {
-  const customers = await Customer.find({}).lean();
+  const customers = await Customer.find().lean();
   res.render("customers/list", {
     customers,
     title: "All Customers' List",
   });
 });
 
-// GET - New Customer
+// GET - New customer
 router.get("/new", (req, res) => {
   res.render("customers/new", { title: "New Customer" });
 });
 
-// POST - New Customer
+// POST - New customer
 router.post("/new", async (req, res) => {
   const customer = await Customer.create(req.body);
   res.redirect("/customers");
 });
 
-// GET - Edit Customer
+// GET - Edit customer
 router.get("/edit/:id", async (req, res) => {
   const customer = await Customer.findById(req.params.id).lean();
   res.render("customers/edit", {
@@ -37,13 +35,13 @@ router.get("/edit/:id", async (req, res) => {
   });
 });
 
-// POST - Edit Customer
+// POST - Edit customer
 router.post("/edit/:id", async (req, res) => {
   await Customer.findByIdAndUpdate(req.params.id, req.body);
   res.redirect("/customers");
 });
 
-// GET - Delete Customer
+// GET - Delete customer
 router.get("/delete/:id", async (req, res) => {
   let match = false;
   const invoices = await Invoice.find().lean();
@@ -72,11 +70,10 @@ router.get("/delete/:id", async (req, res) => {
 //
 //
 
-// Get All Invoices with Transactions & Customers
+// Get All Invoices with Transactions & Vendors
 router.get("/invoices", async (req, res) => {
   const invoices = await Invoice.find({ vendor: null })
-    .select("number amount date customer")
-    .populate("transactions customer items")
+    .populate("transactions customer")
     .lean();
   res.render("customers/invoices/list", {
     invoices,
@@ -89,9 +86,9 @@ router.get("/invoices/detail/:number", async (req, res) => {
   const invoice = await Invoice.findOne({
     number: req.params.number,
   })
-    .populate("transactions customer items")
+    .populate("transactions customer")
     .lean();
-  res.render("customers/invoices/detail", { invoice });
+  res.render("customers/invoices/detail", { invoice, login: true });
 });
 
 // Make Payment against invoice
@@ -115,7 +112,7 @@ router.get("/invoices/new", async (req, res) => {
 // Create New Invoice
 router.post("/invoices/new", async (req, res) => {
   const invoice = await Invoice.create(req.body);
-  res.redirect(`/customers/invoices/items/${invoice._id}`);
+  res.redirect("/customers/invoices");
 });
 
 // Edit Invoice
@@ -133,11 +130,7 @@ router.get("/invoices/edit/:id", async (req, res) => {
 
 // Update Invoice
 router.post("/invoices/edit/:id", async (req, res) => {
-  await Invoice.findByIdAndUpdate(req.params.id, {
-    number: req.body.number,
-    customer: req.body.customer,
-    date: Date.parse(req.body.date),
-  });
+  await Invoice.findByIdAndUpdate(req.params.id, req.body);
   res.redirect("/customers/invoices");
 });
 
@@ -145,15 +138,12 @@ router.post("/invoices/edit/:id", async (req, res) => {
 router.get("/invoices/delete/:id", async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
-    if (
-      (invoice.transactions.length < 1 || invoice.transactions == undefined) &&
-      (invoice.items.length < 1 || invoice.items == undefined)
-    ) {
+    if (invoice.transactions.length < 1 || invoice.transactions == undefined) {
       await Invoice.findByIdAndDelete(req.params.id);
     } else {
       req.flash(
         "error_msg",
-        "This invoice contains items or payment transactions, please delete them to remove the invoice!"
+        "This invoice contains payment transactions, please delete transactions to remove the invoice!"
       );
     }
   } catch (error) {
@@ -167,12 +157,15 @@ router.get("/invoices/delete/:id", async (req, res) => {
 //
 //
 //
-
+//
+//
+//
+//
 // Get Customer Invoices
 router.get("/invoices/customer/:id", async (req, res) => {
   const customer = await Customer.findById(req.params.id).lean();
   const invoices = await Invoice.find({ customer: req.params.id })
-    .populate("transactions customer items")
+    .populate("transactions customer")
     .lean();
   res.render("customers/invoices/customer-invoices", {
     invoices,
@@ -204,94 +197,13 @@ router.post("/invoices/payment/edit/:id", async (req, res) => {
 router.get("/invoices/payment/delete/:id", async (req, res) => {
   await Transaction.findByIdAndDelete(req.params.id);
   const invoice = await Invoice.findOne({ transactions: req.params.id });
-
+  //console.log(invoice.transactions);
   const index = invoice.transactions.indexOf(req.params.id);
   if (index > -1) {
     invoice.transactions.splice(index, 1);
   }
   invoice.save();
   res.redirect(`/customers/invoices/detail/${invoice.number}`);
-});
-
-//
-//
-//  Invoice Items
-//
-//
-// GET - Invoice Items
-router.get("/invoices/items/:id", async (req, res) => {
-  const items = await Item.find().lean();
-  const invoice = await Invoice.findById(req.params.id)
-    .populate("items customer transactions")
-    .lean();
-  res.render("customers/invoices/invoiceItems", { invoice, items });
-});
-
-// POST - Add Invoice Item
-router.post("/invoices/items/add/:id", async (req, res) => {
-  const item = await Item.findById(req.params.id).populate("category");
-  const invoice = await Invoice.findById(req.body.invNumber).populate("items");
-
-  let factor = 0;
-  // switch (invoice.customerType) {
-  //   case "WholeSaleCustomer":
-  //     factor = 0;
-  //   case "WalkInCustomer":
-  //     factor = 5;
-  //   case "InstallmentCustomer":
-  //     factor = 20;
-  // }
-
-  let match = false;
-  invoice.items.map((it) => {
-    if (item.name === it.name) {
-      match = true;
-    }
-  });
-  if (match) {
-    req.flash(
-      "error_msg",
-      "This item already exists, please remove the item to add it again!"
-    );
-  } else {
-    if (req.body.quantity < 1) {
-      req.flash("error_msg", "Please set proper item quantity!");
-    } else {
-      const invoiceItem = {
-        name: item.name,
-        unitPrice: item.unitPrice + (factor / 100) * item.unitPrice,
-        quantity: Number(req.body.quantity),
-        amount:
-          Number(req.body.quantity) * item.unitPrice +
-          (factor / 100) * item.unitPrice,
-        category: item.category.name,
-      };
-
-      const savedItem = await InvoiceItems.create(invoiceItem);
-      invoice.items.push(savedItem);
-      await invoice.save();
-      //Stock Update
-      item.quantity -= Number(req.body.quantity);
-      await item.save();
-    }
-  }
-  res.redirect(`/customers/invoices/items/${invoice._id}`);
-});
-
-// Get - Delete Invoice Item
-router.get("/invoices/items/delete/:id", async (req, res) => {
-  const deletedItem = await InvoiceItems.findByIdAndDelete(req.params.id);
-  const item = await Item.findOne({ name: deletedItem.name });
-  item.quantity += deletedItem.quantity;
-  await item.save();
-
-  const invoice = await Invoice.findOne({ items: req.params.id });
-  const index = invoice.items.indexOf(req.params.id);
-  if (index > -1) {
-    invoice.items.splice(index, 1);
-  }
-  invoice.save();
-  res.redirect(`/customers/invoices/items/${invoice._id}`);
 });
 
 module.exports = router;

@@ -1,5 +1,4 @@
-<h1>Invoice # <a href="/customers/invoices/items/{{invoice._id}}">{{invoice.number}}</a> - {{invoice.customer.name}}
-</h1>
+<h1>Invoice # {{invoice.number}} - {{invoice.customer.name}}</h1>
 
 <table class="table" id="example">
     <thead class="thead-light">
@@ -48,7 +47,7 @@
                 <h4>Invoice Amount</h4>
             </td>
             <td style="text-align: right;">
-                <h4>{{invoiceAmount invoice}}</h4>
+                <h4>{{invoice.amount}}</h4>
             </td>
         </tr>
         <tr>

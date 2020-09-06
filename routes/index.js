@@ -7,9 +7,7 @@ const { ensureGuest, ensureAuthenticated } = require("../middleware/auth");
 //router.get("/", ensureGuest, (req, res) => res.render("welcome"));
 
 // GET - Login
-router.get("/login", ensureGuest, (req, res) =>
-  res.render("login", { layout: false })
-);
+router.get("/login", ensureGuest, (req, res) => res.render("login"));
 
 // Login Handle
 router.post("/login", (req, res, next) => {
@@ -30,7 +28,8 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
 // GET - Dashboard
 router.get("/dashboard", ensureAuthenticated, (req, res) => {
   //const isAdmin = req.user.accessLevel === "Admin" ? true : false;
-  res.render("dashboard", { name: req.user.name, isAdmin: res.locals.isAdmin });
+  // res.render("dashboard", { name: req.user.name, isAdmin: res.locals.isAdmin });
+  res.render("dashboard", { name: "Muhammad Shahzad", isAdmin: true });
 });
 
 module.exports = router;

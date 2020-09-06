@@ -1,30 +1,34 @@
-<h1><i class="fas fa-database mr-2"></i>{{title}}</h1>
-<br>
+<h1>{{title}}</h1>
+
 <table class="table" id="example">
     <thead class="thead-light">
         <tr>
             <th>Name</th>
-            <th>Category</th>
-            <th>Unit Price</th>
-            <th>Quantity</th>
+            <th>Description</th>
+            <th>Address</th>
+            <th>Phone</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>
     </thead>
     <tbody>
-        {{#each items}}
+        {{#each customers}}
         <tr>
-            <td>{{name}}</td>
-            <td>{{category.name}}</td>
-            <td>{{unitPrice}}</td>
-            <td>{{quantity}}</td>
             <td>
-                <a href="/items/edit/{{_id}}" class="btn btn-float">
+                <a href="/customers/invoices/customer/{{_id}}">
+                    {{name}}
+                </a>
+            </td>
+            <td>{{description}}</td>
+            <td>{{address}}</td>
+            <td>{{phone}}</td>
+            <td>
+                <a href="/customers/edit/{{_id}}" class="btn btn-float">
                     <i class="fas fa-edit" style="color:navy;"></i>
                 </a>
             </td>
             <td>
-                <form action="/items/delete/{{_id}}/" method="GET">
+                <form action="/customers/delete/{{_id}}/" method="GET">
                     <button type="submit" class="btn">
                         <i class="fas fa-trash" style="color: red"></i>
                     </button>
@@ -37,6 +41,6 @@
 <br><br>
 {{> _messages}}
 <div class="fixed-action-btn">
-    <a href="/items/new" class="btn btn-primary">
-        <i class="fas fa-plus"></i> New Item</a>
+    <a href="/customers/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Customer</a>
 </div>

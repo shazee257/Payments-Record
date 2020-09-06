@@ -124,4 +124,23 @@ router.get("/categories/delete/:id", async (req, res) => {
   res.redirect("/items/categories");
 });
 
+//
+//
+//
+//
+// GET - items/stock
+router.get("/stock", ensureAuthenticated, async (req, res) => {
+  const items = await Item.find().populate("category").lean();
+  res.render("items/itemStock", { items, title: "Stock Management" });
+});
+
+// POST - items/stock/:id
+router.post("/stock/:id", ensureAuthenticated, async (req, res) => {
+  const item = await Item.findById(req.params.id);
+  item.quantity += Number(req.body.quantity);
+  await item.save();
+
+  res.redirect("/items/stock");
+});
+
 module.exports = router;
