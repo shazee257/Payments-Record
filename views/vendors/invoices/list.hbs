@@ -9,6 +9,7 @@
             <th>Amount</th>
             <th>Paid</th>
             <th>Balance</th>
+            <th>Items</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>
@@ -19,9 +20,14 @@
             <td><a href="/vendors/invoices/detail/{{number}}">{{number}}</a></td>
             <td>{{formatDate date 'DD-MMM-YYYY'}}</td>
             <td>{{vendor.name}}</td>
-            <td>{{amount}}</td>
+            <td>{{invoiceAmount this}}</td>
             <td>{{invoicePaidAmount this}}</td>
             <td>{{invoiceDueAmount this}}</td>
+            <td>
+                <a href="/vendors/invoices/items/{{_id}}" class="btn btn-float">
+                    <i class="fas fa-list" style="color:navy;"></i>
+                </a>
+            </td>
             <td>
                 <a href="/vendors/invoices/edit/{{_id}}" class="btn btn-float">
                     <i class="fas fa-edit" style="color:navy;"></i>

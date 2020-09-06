@@ -63,7 +63,9 @@ const {
   invoicesPaidAmount,
   invoicesDueAmount,
   selectedVendor,
+  selectedOption, //to be deleted after replacing selectedOption
   select,
+  invoiceAmount,
 } = require("./helpers/hbs");
 
 // View Engine Setup
@@ -77,8 +79,10 @@ app.engine(
       invoicesAmount,
       invoicesPaidAmount,
       invoicesDueAmount,
-      selectedVendor,
+      selectedVendor, //to be deleted after replacing selectedOption
+      selectedOption,
       select,
+      invoiceAmount,
     },
     extname: ".hbs",
   })
@@ -93,6 +97,7 @@ app.use("/", require("./routes/index"));
 app.use("/users", ensureAuthenticated, require("./routes/user"));
 app.use("/vendors", ensureAuthenticated, require("./routes/vendor"));
 app.use("/customers", ensureAuthenticated, require("./routes/customer"));
+app.use("/items", ensureAuthenticated, require("./routes/item"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(

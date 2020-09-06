@@ -12,22 +12,7 @@ module.exports = {
     });
     return paid;
   },
-  // Due Amount per Invoice
-  invoiceDueAmount: (invoice) => {
-    let paid = 0;
-    invoice.transactions.map((item) => {
-      paid += item.amount;
-    });
-    return invoice.amount - paid;
-  },
-  // Total Invoices Amount
-  invoicesAmount: (invoices) => {
-    let paid = 0;
-    invoices.map((item) => {
-      paid += item.amount;
-    });
-    return paid;
-  },
+
   // Total Paid Amount
   invoicesPaidAmount: (invoices) => {
     let paid = 0;
@@ -38,24 +23,18 @@ module.exports = {
     });
     return paid;
   },
-  // Total Balance Amount
-  invoicesDueAmount: (invoices) => {
-    let paid = 0;
-    let invoicesAmount = 0;
-    invoices.map((inv) => {
-      invoicesAmount += inv.amount;
-      inv.transactions.map((item) => {
-        paid += item.amount;
-      });
-    });
-    return invoicesAmount - paid;
-  },
+
   selectedVendor: (id, id2) => {
     if (id.toString() === id2.toString()) {
       return `selected`;
     }
   },
-  // Select Public Private auto on edit form
+  selectedOption: (id, id2) => {
+    if (id.toString() === id2.toString()) {
+      return `selected`;
+    }
+  },
+  // Select auto on edit form
   select: (selected, options) => {
     return options
       .fn(this)
@@ -67,5 +46,44 @@ module.exports = {
         new RegExp(">" + selected + "</option>"),
         ' selected="selected"$&'
       );
+  },
+  // Invoice Amount
+  invoiceAmount: (invoice) => {
+    let amount = 0;
+    invoice.items.map((item) => {
+      amount += item.amount * item.quantity;
+    });
+    return amount;
+  }, // Due Amount per Invoice
+  invoiceDueAmount: (invoice) => {
+    let amount = 0;
+    let paid = 0;
+    invoice.items.map((item) => {
+      amount += item.amount * item.quantity;
+    });
+    invoice.transactions.map((tr) => {
+      paid += tr.amount;
+    });
+    return amount - paid;
+  },
+  // Total Invoices Amount
+  invoicesAmount: (invoices) => {
+    let amount = 0;
+    invoices.map((inv) => {
+      inv.items.map((item) => {
+        amount += item.amount * item.quantity;
+      });
+    });
+    return amount;
+  },
+  // Total Balance Amount
+  invoicesDueAmount: (invoices) => {
+    let amount = 0;
+    let paid = 0;
+    invoices.map((inv) => {
+      inv.items.map((item) => (amount += item.amount * item.quantity));
+      inv.transactions.map((tr) => (paid += tr.amount));
+    });
+    return amount - paid;
   },
 };
