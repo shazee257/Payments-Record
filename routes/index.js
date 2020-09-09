@@ -7,7 +7,9 @@ const { ensureGuest, ensureAuthenticated } = require("../middleware/auth");
 //router.get("/", ensureGuest, (req, res) => res.render("welcome"));
 
 // GET - Login
-router.get("/login", ensureGuest, (req, res) => res.render("login"));
+router.get("/login", ensureGuest, (req, res) =>
+  res.render("login", { layout: false })
+);
 
 // Login Handle
 router.post("/login", (req, res, next) => {

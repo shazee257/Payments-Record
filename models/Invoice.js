@@ -20,6 +20,12 @@ const invoiceSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  customerType: {
+    type: String,
+    required: true,
+    enum: ["WholeSaleCustomer", "PartialPaymentCustomer", "WalkInCustomer"],
+    default: "WalkInCustomer",
+  },
 });
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);

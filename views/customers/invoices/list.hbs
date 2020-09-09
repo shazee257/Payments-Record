@@ -4,8 +4,9 @@
     <thead class="thead-light">
         <tr>
             <th>Invoice #</th>
+            <th>Type</th>
             <th>Date</th>
-            <th>Invoice Belongs To</th>
+            <th>Belongs To</th>
             <th>Amount</th>
             <th>Paid</th>
             <th>Balance</th>
@@ -17,7 +18,8 @@
     <tbody>
         {{#each invoices}}
         <tr>
-            <td><a href="/customers/invoices/detail/{{number}}">{{number}}</a></td>
+            <td><strong><a href="/customers/invoices/detail/{{number}}">{{number}}</a></strong></td>
+            <td>{{customerType}}</td>
             <td>{{formatDate date 'DD-MMM-YYYY'}}</td>
             <td>{{customer.name}}</td>
             <td>{{invoiceAmount this}}</td>
@@ -51,8 +53,8 @@
 {{> _messages}}
 <br><br>
 <div class="fixed-action-btn">
-    <a href="/customers/invoices/new" class="btn btn-primary">
-        <i class="fas fa-plus"></i> New Invoice</a>
+    <a href="/customers/invoices/new" class="btn-floating btn-large waves-effect waves-light red">
+        <i class=" fas fa-plus"></i></a>
 </div>
 
 <table class="table">

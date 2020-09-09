@@ -14,17 +14,26 @@
                     <input type="date" id="date" name="date" class="form-control"
                         value="{{formatDate invoice.date 'YYYY-MM-DD'}}" />
                 </div>
-                <div class=" form-group">
+                <div class="form-group">
                     <label for="customer">Customer</label>
-                    <select id="customer" name="customer" class="form-control">
+                    <select id="customer" name="customer">
                         {{#each customers}}
-                        <option value="{{_id}}" {{selectedCustomer _id ../invoice.customer._id}}>
-                            {{name}}</option>
+                        <option value="{{_id}}" {{selectedOption _id ../invoice.customer._id}}>{{name}}</option>
                         {{/each}}
-
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Create</button>
+                <div class="form-group">
+                    <label for="customerType">Customer Type</label>
+                    <select id="customerType" name="customerType">
+                        {{#select invoice.customerType}}
+                        <option value="WalkInCustomer" selected>Walk-in-Customer</option>
+                        <option value="PartialPaymentCustomer">Partial-Payment-Customer</option>
+                        <option value="WholeSaleCustomer">Whole-Sale-Customer</option>
+                        {{/select}}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Save</button>
             </form>
         </div>
     </div>

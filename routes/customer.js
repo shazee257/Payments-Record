@@ -75,7 +75,6 @@ router.get("/delete/:id", async (req, res) => {
 // Get All Invoices with Transactions & Customers
 router.get("/invoices", async (req, res) => {
   const invoices = await Invoice.find({ vendor: null })
-    .select("number amount date customer")
     .populate("transactions customer items")
     .lean();
   res.render("customers/invoices/list", {
@@ -120,7 +119,7 @@ router.post("/invoices/new", async (req, res) => {
 
 // Edit Invoice
 router.get("/invoices/edit/:id", async (req, res) => {
-  const customers = await Customer.find({}).lean();
+  const customers = await Customer.find().lean();
   const invoice = await Invoice.findById(req.params.id)
     .populate("customer")
     .lean();
@@ -218,29 +217,29 @@ router.get("/invoices/payment/delete/:id", async (req, res) => {
 //  Invoice Items
 //
 //
-// GET - Invoice Items
+// GET - items against invoice
 router.get("/invoices/items/:id", async (req, res) => {
-  const items = await Item.find().lean();
+  const items = await Item.find().populate("category").lean();
   const invoice = await Invoice.findById(req.params.id)
     .populate("items customer transactions")
     .lean();
   res.render("customers/invoices/invoiceItems", { invoice, items });
 });
 
-// POST - Add Invoice Item
+// POST - Add item against Invoice
 router.post("/invoices/items/add/:id", async (req, res) => {
   const item = await Item.findById(req.params.id).populate("category");
   const invoice = await Invoice.findById(req.body.invNumber).populate("items");
 
   let factor = 0;
-  // switch (invoice.customerType) {
-  //   case "WholeSaleCustomer":
-  //     factor = 0;
-  //   case "WalkInCustomer":
-  //     factor = 5;
-  //   case "InstallmentCustomer":
-  //     factor = 20;
-  // }
+  switch (invoice.customerType) {
+    case "WholeSaleCustomer":
+      factor = 0;
+    case "WalkInCustomer":
+      factor = 5;
+    case "PartialPaymentCustomer":
+      factor = 20;
+  }
 
   let match = false;
   invoice.items.map((it) => {

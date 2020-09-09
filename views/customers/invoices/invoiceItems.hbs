@@ -36,8 +36,8 @@
 {{> _messages}}
 
 <div class="fixed-action-btn">
-    <button onclick="myFunction()" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Items</button>
+    <button onclick="myFunction()" class="btn-floating btn-large waves-effect waves-light red">
+        <i class="fas fa-plus"></i></button>
 </div>
 
 {{!-- Invoice Summary --}}
@@ -83,8 +83,9 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Item</th>
+                            <th>Category</th>
                             <th>Price</th>
-                            <th>Qty in Stock</th>
+                            <th>Stock</th>
                             <th>Purchase Qty</th>
                             <th>Click to Add</th>
                         </tr>
@@ -94,14 +95,16 @@
                         <tr>
                             <form action="/customers/invoices/items/add/{{_id}}" method="POST">
                                 <td>{{name}}</td>
-                                <td><input type="number" name="unitPrice" value="{{unitPrice}}" disabled></td>
+                                <td>{{category.name}}</td>
+                                <th>{{unitPrice}}</th>
                                 <td>{{quantity}}</td>
-                                <td><input type="number" name="quantity"></td>
+                                <td><input type="number" name="quantity" min="1" max="100"></td>
                                 <input type="hidden" name="invNumber" value="{{../invoice._id}}">
                                 <td>
                                     <input type="submit" value="Click to Add item" style="color:crimson">
                                     </submit>
                                 </td>
+                                <input type="hidden" name="unitPrice" value="{{unitPrice}}">
                             </form>
                         </tr>
                         {{/each}}
